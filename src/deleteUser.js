@@ -1,28 +1,33 @@
-'use strict';
-const AWS = require("aws-sdk")
-const middy = require("@middy/core")
-const httpJsonBodyParser = require("@middy/http-json-body-parser")
+"use strict";
+const AWS = require("aws-sdk");
+const middy = require("@middy/core");
+const httpJsonBodyParser = require("@middy/http-json-body-parser");
 
 const deleteUser = async (event) => {
+  const dynamodb = new AWS.DynamoDB.DocumentClient();
+  const id = event.pathParameters.id;
 
-  const dynamodb = new  AWS.DynamoDB.DocumentClient();
-  const id = event.pathParameters.id;    
-   
-  await dynamodb.delete({
-    TableName : "UserTable",
-    Key : {
+  await dynamodb
+    .delete({
+      TableName: "UserTable",
+      Key: {
         id: id,
-    }, 
-  }).promise()
-   
+      },
+    })
+    .promise();
+
   return {
     statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST",
+    },
     body: JSON.stringify({
-        msg:'User Deleted'
-    }), 
-  };  
-};  
+      msg: "User Deleted",
+    }),
+  };
+};
 
 module.exports = {
-  handler: middy(deleteUser).use(httpJsonBodyParser())
-}
+  handler: middy(deleteUser).use(httpJsonBodyParser()),
+};

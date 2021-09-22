@@ -83,8 +83,8 @@ functions:
     handler: src/updateUser.handler 
     events:
       - httpApi:
-          path: /user/{id}
-          method: put
+          path: /user/update/{id}
+          method: post
   deleteUser:
     handler: src/deleteUser.handler 
     events:
